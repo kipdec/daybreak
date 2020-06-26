@@ -32,6 +32,8 @@ function preload() {
   this.load.image("ground", "assets/platform.png");
   this.load.image("star", "assets/star.png");
   this.load.image("bomb", "assets/bomb.png");
+  this.load.image('tiles', 'assets/spritesheets/sprite_sheet.png');
+  this.load.tilemapTiledJSON('map', 'assets/tilemaps/test_dungeon.json');
   this.load.spritesheet("dude", "assets/dude.png", {
     frameWidth: 32,
     frameHeight: 48,
@@ -39,8 +41,15 @@ function preload() {
 }
 
 function create() {
+  // adding tilemap
+  const map = this.make.tilemap({key: 'map'});
+
+  // Adding sprite sheet
+  const tileset = map.addTilesetImage('test3','tiles');
   //  A simple background for our game
-  this.add.image(400, 300, "sky");
+  //this.add.image(400, 300, "sky");
+
+  const map_plat = map.createStaticLayer('floor', tileset, 0, 200);
 
   //  The platforms group contains the ground and the 2 ledges we can jump on
   platforms = this.physics.add.staticGroup();
