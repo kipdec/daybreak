@@ -44,6 +44,10 @@ function preload() {
   });
 }
 
+// Each level should be its own scene
+// Each will be a class that extends phaser.scene
+// Create /levels/testDungeon.js
+
 function create() {
   // adding tilemap
   const map = this.make.tilemap({key: 'map'});
