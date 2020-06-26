@@ -78,8 +78,7 @@ function create() {
   player = this.physics.add.sprite(80, 80, "pc");
   //
 
-  ////  Player physics properties. Give the little guy a slight bounce.
-  player.setBounce(0.2);
+  ////  Player physics properties.
   player.setCollideWorldBounds(true);
   
   this.physics.add.collider(player, walls);
