@@ -38,7 +38,7 @@ function preload() {
     frameWidth: 32,
     frameHeight: 48,
   });
-  this.load.spritesheet('pc','assets/pc_sheet.png',{
+  this.load.spritesheet('pc','assets/princess.png',{
     frameWidth: 24,
     frameHeight: 32
   });
