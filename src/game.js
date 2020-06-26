@@ -171,33 +171,33 @@ function update() {
     player.setVelocityY(0)
   }
   
-  const dodge = () => {
-    if (cursors.left.isDown) {
-      player.setPosition(player.x - 1, player.y);
-      player.anims.play("left", true);
+  // const dodge = () => {
+  //   if (cursors.left.isDown) {
+  //     player.setPosition(player.x - 1, player.y);
+  //     player.anims.play("left", true);
       
-    } else if (cursors.right.isDown) {
-      player.setPosition(player.x + 1, player.y);
+  //   } else if (cursors.right.isDown) {
+  //     player.setPosition(player.x + 1, player.y);
       
-      player.anims.play("right", true);
-    } else {
-      player.setVelocityX(0);
+  //     player.anims.play("right", true);
+  //   } else {
+  //     player.setVelocityX(0);
   
-      player.anims.play("turn");
-    }
+  //     player.anims.play("turn");
+  //   }
   
-    if (cursors.up.isDown) {
-      player.setPosition(player.x, player.y - 1);
+  //   if (cursors.up.isDown) {
+  //     player.setPosition(player.x, player.y - 1);
 
-    } else if (cursors.down.isDown) {
-      player.setPosition(player.x, player.y + 1);
+  //   } else if (cursors.down.isDown) {
+  //     player.setPosition(player.x, player.y + 1);
 
-    } else {
-      player.setVelocityY(0)
-    }
-  }
+  //   } else {
+  //     player.setVelocityY(0)
+  //   }
+  // }
 
-  cursors.space.on('down', dodge)  
+  // cursors.space.on('down', dodge)  
 
 }
 
