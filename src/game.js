@@ -145,28 +145,55 @@ function update() {
   }
 
   if (cursors.left.isDown) {
-    player.setVelocityX(-160);
+    player.setVelocityX(-100);
 
     player.anims.play("left", true);
   } else if (cursors.right.isDown) {
-    player.setVelocityX(160);
+    player.setVelocityX(100);
 
     player.anims.play("right", true);
-  } else if (cursors.up.isDown) {
-    player.setVelocityY(-160);
-  } else if (cursors.down.isDown) {
-    player.setVelocityY(160);
-
-  }else {
+  } else {
     player.setVelocityX(0);
-    player.setVelocityY(0);
 
-    //player.anims.play("turn");
+    player.anims.play("turn");
   }
 
-  if (cursors.up.isDown && player.body.touching.down) {
-    player.setVelocityY(-330);
+  if (cursors.up.isDown) {
+    player.setVelocityY(-100);
+  } else if (cursors.down.isDown) {
+    player.setVelocityY(100)
+  } else {
+    player.setVelocityY(0)
   }
+  
+  const dodge = () => {
+    if (cursors.left.isDown) {
+      player.setPosition(player.x - 1, player.y);
+      player.anims.play("left", true);
+      
+    } else if (cursors.right.isDown) {
+      player.setPosition(player.x + 1, player.y);
+      
+      player.anims.play("right", true);
+    } else {
+      player.setVelocityX(0);
+  
+      player.anims.play("turn");
+    }
+  
+    if (cursors.up.isDown) {
+      player.setPosition(player.x, player.y - 1);
+
+    } else if (cursors.down.isDown) {
+      player.setPosition(player.x, player.y + 1);
+
+    } else {
+      player.setVelocityY(0)
+    }
+  }
+
+  cursors.space.on('down', dodge)  
+
 }
 
 function collectStar(player, star) {
