@@ -3,13 +3,14 @@
 import Phaser from 'phaser'
 import { game } from '../index'
 import testDungeon from '../assets/tilemaps/test_dungeon_fullersize.json';
-import pcImg from '../assets/princess.png';
+import pcImg from '../assets/princess_right.png';
 import sS from '../assets/spritesheets/sprite_sheet_ours.png';
 import fireball from '../assets/fireball.png';
-import reticle from '../assets/reticle.png';
+import reticleImg from '../assets/reticle.png';
 import Attack from '../common/Attack.js';
 
 var player;
+var reticle;
 var cursors;
 var gameOver = false;
 
@@ -22,11 +23,11 @@ export default class TestDungeon extends Phaser.Scene {
     this.load.image('tiles', sS);
     this.load.tilemapTiledJSON('map', testDungeon);
     this.load.spritesheet('pc',pcImg,{
-      frameWidth: 24,
-      frameHeight: 32
+      frameWidth: 23,
+      frameHeight: 17
     });
     this.load.image('attack', fireball);
-    this.load.image('reticle', reticle);
+    this.load.image('reticle', reticleImg);
   }
 
   create () {
@@ -72,7 +73,7 @@ export default class TestDungeon extends Phaser.Scene {
     });
     
     // create crosshair which is controlled by player class
-    const reticle = this.physics.add.sprite(145, 145, 'reticle');
+    reticle = this.physics.add.sprite(145, 145, 'reticle');
     reticle.setOrigin(0.5, 0.5).setDisplaySize(50, 25).setCollideWorldBounds(true);
     
     // create group for attack spell objects
@@ -134,9 +135,13 @@ export default class TestDungeon extends Phaser.Scene {
       reticle.x += pointer.movementX;
       reticle.y += pointer.movementY;
     }, this);
+    console.log(player);
+    console.log(reticle);
   }
   
   update () {
+    const rot = Phaser.Math.Angle.Between(player.x, player.y, reticle.x, reticle.y);
+    player.rotation = Phaser.Math.Angle.Between(player.x, player.y, reticle.x, reticle.y);
     if (gameOver) {
       return;
     }
