@@ -1,6 +1,7 @@
 // TestDungeon.js
 
 import Phaser from 'phaser'
+import { game } from '../index'
 import testDungeon from '../assets/tilemaps/test_dungeon_fullersize.json';
 import pcImg from '../assets/princess.png';
 import sS from '../assets/spritesheets/sprite_sheet.png';
@@ -99,6 +100,17 @@ export default class TestDungeon extends Phaser.Scene {
         this.physics.add.collider(attack, walls);
       }
     }, this);
+
+    // Pointer lock will only work after mousedown
+    game.canvas.addEventListener('mousedown', function () {
+      game.input.mouse.requestPointerLock();
+    });
+
+    // Exit pointer lock when Q or escape (by default) is pressed.
+    this.input.keyboard.on('keydown_Q', function (event) {
+      if (game.input.mouse.locked)
+        game.input.mouse.releasePointerLock();
+    }, 0, this);
 
     // Move reticle upon pointer move
     this.input.on('pointermove', function (pointer) {
