@@ -9,10 +9,11 @@ var config = {
   pixelArt: true,
   type: Phaser.WEBGL,
   scale: {
-    height: 160,
-    width: 160
+    mode: Phaser.Scale.FIT,
+    height: 288,
+    width: 288
   },
-  zoom: 5,
+  zoom: 4,
   physics: {
     default: "arcade",
   },

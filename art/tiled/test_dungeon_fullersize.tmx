@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="36" height="36" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="1">
+ <tileset firstgid="1" name="test3" tilewidth="8" tileheight="8" tilecount="2500" columns="50">
+  <image source="../programmer_art/sprite_sheet.png" width="400" height="400"/>
+ </tileset>
+ <layer id="1" name="floor" width="36" height="36" locked="1">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBAE1UDAMQCAAAFAAAANwYAaQAAADEBAAAyAQEAAAACagBjAQAAZAEzAAAANM0AAAD/zgAUgBADS7scT3DVZE9njCx1ccPmX6+muRFOTKlX09wInY3s78SUYqszruDEWME5YKtTr0DCOZBd6iUVYAE=
+  </data>
+ </layer>
+ <layer id="3" name="walls" width="36" height="36" locked="1">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBAEz0DAJQCyAEAAJgAxwEAAJoAAAA1AQAAyTYBAACZAJcBmJhnAQAAymiWAJUBAAAYoGBNSW4HgAIj4QeDA30M6yIN5kfp+zJnxYcUk2vElhbpE/gN89cJ6vFVL6kT7dFi+yLZZIxwpRlMhR0=
+  </data>
+ </layer>
+ <layer id="2" name="doors" width="36" height="36">
+  <data encoding="base64" compression="zstd">
+   KLUv/WBAE30CAJQCAACdAAAAngAAAJ8AAACgAM8AAAAJ0gABAQQBAAcKOQA8AGsAAABsbgAMAE8cxbtMf5AwgBEAKBuHYwgfwPuYGBh/XMI7V/sgVUsKYAE=
+  </data>
+ </layer>
+</map>
