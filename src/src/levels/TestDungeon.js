@@ -1,7 +1,7 @@
 // TestDungeon.js
 
 import Phaser from 'phaser'
-import testDungeon from '../assets/tilemaps/test_dungeon.json';
+import testDungeon from '../assets/tilemaps/test_dungeon_fullersize.json';
 import pcImg from '../assets/princess.png';
 import sS from '../assets/spritesheets/sprite_sheet.png';
 
