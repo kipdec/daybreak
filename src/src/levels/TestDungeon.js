@@ -85,8 +85,7 @@ export default class TestDungeon extends Phaser.Scene {
 
     stairsObjects.forEach(stairsObject => {
       const stair = stairs.create(stairsObject.x, stairsObject.y - 8).setOrigin(0);
-      stair.setDisplaySize(stairsObject.width, stairsObject.height);
-    //  stair.body.setSize(stairsObject.width,stairsObject.height);
+      stair.visible = false;
     });
     console.log(stairs);
     this.physics.add.collider(player, stairs, () => this.scene.start('TestDungeon'));
