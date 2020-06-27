@@ -8,7 +8,7 @@ let Attack = new Phaser.Class({
   // Attack constructor
   function Attack (scene) {
     Phaser.GameObjects.Image.call(this, scene, 0, 0, 'attack');
-    this.speed = 0.08
+    this.speed = 0.1
     this.born = 0
     this.direction = 0
     this.xSpeed = 0;
@@ -43,7 +43,7 @@ let Attack = new Phaser.Class({
       this.x += this.xSpeed * delta;
       this.y += this.ySpeed * delta;
       this.born += delta;
-      if (this.born > 1800)
+      if (this.born > 5000)
       {
           this.setActive(false);
           this.setVisible(false);

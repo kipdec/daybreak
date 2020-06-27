@@ -71,8 +71,8 @@ export default class TestDungeon extends Phaser.Scene {
     });
     
     // create crosshair which is controlled by player class
-    const reticle = this.physics.add.sprite(90, 90, 'reticle');
-    reticle.setOrigin(0.5, 0.5).setDisplaySize(60, 25).setCollideWorldBounds(true);
+    const reticle = this.physics.add.sprite(145, 145, 'reticle');
+    reticle.setOrigin(0.5, 0.5).setDisplaySize(50, 25).setCollideWorldBounds(true);
     
     // create group for attack spell objects
     let playerAttacks = this.physics.add.group({ classType: Attack, runChildUpdate: true });
@@ -96,7 +96,7 @@ export default class TestDungeon extends Phaser.Scene {
       if (attack)
       {
         attack.shoot(player, reticle);
-        // this.physics.add.collider(enemy, attack, enemyHitCallback);
+        this.physics.add.collider(attack, walls);
       }
     }, this);
 
