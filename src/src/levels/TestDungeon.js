@@ -86,6 +86,23 @@ export default class TestDungeon extends Phaser.Scene {
       right:Phaser.Input.Keyboard.KeyCodes.D,
       space:Phaser.Input.Keyboard.KeyCodes.SPACE});
 
+    // add doors
+    var stairsObjects = map.getObjectLayer('stairs')['objects'];
+    var stairs = this.physics.add.group({
+      immovable: true,
+      visible: false
+    });
+
+    //console.log(stairsObjects);
+
+    stairsObjects.forEach(stairsObject => {
+      const stair = stairs.create(stairsObject.x, stairsObject.y - 8).setOrigin(0);
+      stair.setDisplaySize(stairsObject.width, stairsObject.height);
+      stair.visible = false;
+    });
+    console.log(stairs);
+    this.physics.add.collider(player, stairs, () => this.scene.start('TestDungeon'));
+
     // Fires attack from player on left click of mouse
     this.input.on('pointerdown', function (pointer, time, lastFired) {
       if (player.active === false)
@@ -117,7 +134,6 @@ export default class TestDungeon extends Phaser.Scene {
       reticle.x += pointer.movementX;
       reticle.y += pointer.movementY;
     }, this);
-    
   }
   
   update () {

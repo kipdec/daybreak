@@ -16,6 +16,9 @@ var config = {
   zoom: 4,
   physics: {
     default: "arcade",
+    arcade: {
+      debug: false
+    }
   },
   scene: [TestDungeon],
 };
