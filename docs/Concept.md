@@ -2,7 +2,7 @@
 
 ## Story Concept
 
-Talia is a Princess of Daylight and is the stories main character. She travels to find the Prince of Night, Anselm. To do this, she must traverse the dungeon guarded by her father, Ulrich, King of Daylight. 
+Talia is a Princess of Daylight and is the story's main character. She travels to find the Prince of Night, Anselm. To do this, she must traverse the dungeon guarded by her father, Ulrich, King of Daylight. 
 
 By nature the love between Anselm and Talia is not allowed and members from both tribes will to try to stop her from finding her love. Anselm left a gift at the start of the dungeon, a spell to be used as a weapon against creatures of the night. 
 
@@ -16,7 +16,7 @@ After Talia defeats Ulrich, the two are united only for a short time, creating D
 
 ### Talia
 
-Talia will have two attacks, a melee attack and a ranged magic attack, the appropriate attack will be defined by the specific room where magic hits creatures of night, and melee hits creatures of day. The color scheme found within the room should clue in whether day or night is the appropriate type of attack.
+Talia will have an attack spell and a shield/block spell thing. Hopefully, eventually, a dodge as well. She can switch the element(?) of her spell, using a button press, at the cost of using the inverse for her block. Day spells will damage night enemies, but only a day shield can defend against them. The inverse being true for day enemies. The color scheme found within the room should clue in whether day or night is the appropriate type of attack.
 
 ### Rooms
 
