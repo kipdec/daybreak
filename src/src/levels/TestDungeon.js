@@ -9,14 +9,13 @@ var player;
 var cursors;
 var gameOver = false;
 
-export default class TestDungeon extends Phaser.scene {
-  // constructor() {
-  //    super({ key: 'TestDungeon' })
-  // }
+export default class TestDungeon extends Phaser.Scene {
+  constructor() {
+    super({ key: 'TestDungeon'})
+  }
 
   preload () {
-    this.load.image('tiles', sS
-    );
+    this.load.image('tiles', sS);
     this.load.tilemapTiledJSON('map', testDungeon);
     this.load.spritesheet('pc',pcImg,{
       frameWidth: 24,
@@ -36,7 +35,7 @@ export default class TestDungeon extends Phaser.scene {
     const walls = map.createStaticLayer('walls', tileset, 0, 0);
     walls.setCollisionByExclusion(-1, true);
     const doors = map.createStaticLayer('doors', tileset, 0, 0);
-    importsWork();
+
   
     // The player and its settings
     player = this.physics.add.sprite(80, 80, "pc");
@@ -81,11 +80,11 @@ export default class TestDungeon extends Phaser.scene {
     }
 
     if (cursors.left.isDown) {
-      player.setVelocityX(-100);
+      player.setVelocityX(-50);
 
       player.anims.play("left", true);
     } else if (cursors.right.isDown) {
-      player.setVelocityX(100);
+      player.setVelocityX(50);
 
       player.anims.play("right", true);
     } else {
@@ -95,9 +94,9 @@ export default class TestDungeon extends Phaser.scene {
     }
 
     if (cursors.up.isDown) {
-      player.setVelocityY(-100);
+      player.setVelocityY(-50);
     } else if (cursors.down.isDown) {
-      player.setVelocityY(100)
+      player.setVelocityY(50)
     } else {
       player.setVelocityY(0)
     }
