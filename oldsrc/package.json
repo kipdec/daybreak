@@ -1,0 +1,16 @@
+{
+  "name": "phaser-game",
+  "version": "0.1.0",
+  "description": "",
+  "main": "game.js",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "^1.1.0",
+    "grunt-contrib-connect": "^2.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Taylor Cool",
+  "license": "ISC"
+}
