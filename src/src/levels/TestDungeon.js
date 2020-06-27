@@ -4,7 +4,7 @@ import Phaser from 'phaser'
 import { game } from '../index'
 import testDungeon from '../assets/tilemaps/test_dungeon_fullersize.json';
 import pcImg from '../assets/princess.png';
-import sS from '../assets/spritesheets/sprite_sheet.png';
+import sS from '../assets/spritesheets/sprite_sheet_ours.png';
 import fireball from '../assets/fireball.png';
 import reticle from '../assets/reticle.png';
 import Attack from '../common/Attack.js';
