@@ -8,6 +8,7 @@ import sS from '../assets/spritesheets/sprite_sheet.png';
 import fireball from '../assets/fireball.png';
 import reticle from '../assets/reticle.png';
 import Attack from '../common/Attack.js';
+import enemy from '../assets/pc.png'
 
 var player;
 var cursors;
@@ -27,6 +28,7 @@ export default class TestDungeon extends Phaser.Scene {
     });
     this.load.image('attack', fireball);
     this.load.image('reticle', reticle);
+    this.load.image('enemy', enemy)
   }
 
   create () {
@@ -93,6 +95,13 @@ export default class TestDungeon extends Phaser.Scene {
       visible: false
     });
 
+    // add enemies
+    var enemiesObjects = map.getObjectLayer('enemies')['objects'];
+    var enemies = this.physics.add.group({
+      immovable: false,
+      visible: true
+    })
+
     //console.log(stairsObjects);
 
     stairsObjects.forEach(stairsObject => {
@@ -100,8 +109,16 @@ export default class TestDungeon extends Phaser.Scene {
       stair.setDisplaySize(stairsObject.width, stairsObject.height);
       stair.visible = false;
     });
-    console.log(stairs);
+    // console.log(stairs);
     this.physics.add.collider(player, stairs, () => this.scene.start('TestDungeon'));
+
+    enemiesObjects.forEach(enemiesObject => {
+      let enemy = enemies.create(enemiesObject.x, enemiesObject.y).setOrigin(0);
+      enemy.setDisplaySize(enemiesObject.width, enemiesObject.height);
+      enemy.visible = true;
+      enemy = this.physics.add.sprite(120, 120, "enemy");
+    });
+    console.log(enemies);
 
     // Fires attack from player on left click of mouse
     this.input.on('pointerdown', function (pointer, time, lastFired) {
