@@ -1,4 +1,4 @@
-import * as testDungeon from './scenes/testDungeon'
+import testDungeon from './scenes/testDungeon'
 
 const config = {
   pixelArt: true,
