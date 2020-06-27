@@ -1,9 +1,12 @@
 // TestDungeon.js
 
-import Phaser from 'phaser'
+import Phaser from 'phaser';
 import testDungeon from '../assets/tilemaps/test_dungeon.json';
 import pcImg from '../assets/princess.png';
 import sS from '../assets/spritesheets/sprite_sheet.png';
+import fireball from '../assets/fireball.png';
+import reticle from '../assets/reticle.png';
+import Attack from '../common/Attack.js';
 
 var player;
 var cursors;
@@ -11,7 +14,7 @@ var gameOver = false;
 
 export default class TestDungeon extends Phaser.Scene {
   constructor() {
-    super({ key: 'TestDungeon'})
+    super({ key: 'TestDungeon' })
   }
 
   preload () {
@@ -21,6 +24,8 @@ export default class TestDungeon extends Phaser.Scene {
       frameWidth: 24,
       frameHeight: 32
     });
+    this.load.image('attack', fireball);
+    this.load.image('reticle', reticle);
   }
 
   create () {
@@ -36,7 +41,6 @@ export default class TestDungeon extends Phaser.Scene {
     walls.setCollisionByExclusion(-1, true);
     const doors = map.createStaticLayer('doors', tileset, 0, 0);
 
-  
     // The player and its settings
     player = this.physics.add.sprite(80, 80, "pc");
   
@@ -65,6 +69,13 @@ export default class TestDungeon extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });
+    
+    // create crosshair which is controlled by player class
+    const reticle = this.physics.add.sprite(90, 90, 'reticle');
+    reticle.setOrigin(0.5, 0.5).setDisplaySize(60, 25).setCollideWorldBounds(true);
+    
+    // create group for attack spell objects
+    let playerAttacks = this.physics.add.group({ classType: Attack, runChildUpdate: true });
 
     //  Input Events
     cursors = this.input.keyboard.addKeys(
@@ -73,18 +84,41 @@ export default class TestDungeon extends Phaser.Scene {
       left:Phaser.Input.Keyboard.KeyCodes.A,
       right:Phaser.Input.Keyboard.KeyCodes.D,
       space:Phaser.Input.Keyboard.KeyCodes.SPACE});
+
+    // Fires attack from player on left click of mouse
+    this.input.on('pointerdown', function (pointer, time, lastFired) {
+      if (player.active === false)
+        return;
+
+      // Get attack from attacks group
+      var attack = playerAttacks.get().setActive(true).setVisible(true);
+
+      if (attack)
+      {
+        attack.shoot(player, reticle);
+        // this.physics.add.collider(enemy, attack, enemyHitCallback);
+      }
+    }, this);
+
+    // Move reticle upon pointer move
+    this.input.on('pointermove', function (pointer) {
+      reticle.x += pointer.movementX;
+      reticle.y += pointer.movementY;
+    }, this);
+    
   }
+  
   update () {
     if (gameOver) {
       return;
     }
-
+    
     if (cursors.left.isDown) {
-      player.setVelocityX(-50);
+      player.setVelocityX(-60);
 
       player.anims.play("left", true);
     } else if (cursors.right.isDown) {
-      player.setVelocityX(50);
+      player.setVelocityX(60);
 
       player.anims.play("right", true);
     } else {
@@ -94,9 +128,9 @@ export default class TestDungeon extends Phaser.Scene {
     }
 
     if (cursors.up.isDown) {
-      player.setVelocityY(-50);
+      player.setVelocityY(-60);
     } else if (cursors.down.isDown) {
-      player.setVelocityY(50)
+      player.setVelocityY(60)
     } else {
       player.setVelocityY(0)
     }
