@@ -1,4 +1,4 @@
-// Title.js
+// TestDungeon.js
 
 import Phaser, { GameObjects } from 'phaser'
 import { game } from '../index'
@@ -20,6 +20,21 @@ export default class Title extends Phaser.Scene {
   preload () {
     this.load.image('title_tiles', titleScreenSheet);
     this.load.tilemapTiledJSON('title_map', title);
+    this.load.spritesheet('pc',pcImg,{
+      frameWidth: 20,
+      frameHeight: 20
+    });
+    this.load.image('attack', fireball);
+    this.load.image('enemy', enemyImg);
+    this.load.spritesheet('bear', bearImg, {
+      frameWidth: 14,
+      frameHeight: 15
+    });
+    this.load.image('reticle', reticleImg);
+    this.load.spritesheet('heart', heartImg, {
+      frameWidth: 7,
+      frameHeight: 6
+    });
   }
 
   create () {
@@ -41,17 +56,13 @@ export default class Title extends Phaser.Scene {
     buttonsObjects.forEach(buttonObject => {
       const button = buttons.create(buttonObject.x, buttonObject.y).setOrigin(0);
       button.name = buttonObject.name;
-      console.log(button.name);
       button.setDisplaySize(buttonObject.width, buttonObject.height);
       button.enableBody = true;
-      button.setInteractive({useHandCursor: true});
+      button.setInteractive();
       button.alpha = 0.000000000000001;
       switch (button.name) {
         case 'play':
-          button.on('pointerdown', () => this.scene.start('TestDungeon'));
-          break;
-        case 'controls':
-          button.on('pointerdown', () => this.scene.switch('Controls'));
+          button.on('pointerdown', () => this.scene.switch('TestDungeon'));
           break;
         default:
           console.log('not implemented');

@@ -3,6 +3,7 @@
 import Phaser from 'phaser';
 import TestDungeon from './levels/TestDungeon';
 import Title from './levels/Title.js';
+import Controls from './levels/Controls.js';
 
 document.body.style.cursor = 'none';  // removes cursor so we can use crosshair instead
 
@@ -21,7 +22,7 @@ var config = {
       debug: true
     }
   },
-  scene: [Title,TestDungeon],
+  scene: [Title,TestDungeon,Controls],
 };
 
 export var game = new Phaser.Game(config);
