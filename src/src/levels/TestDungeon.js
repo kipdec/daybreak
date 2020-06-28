@@ -60,7 +60,7 @@ export default class TestDungeon extends Phaser.Scene {
 
     // The player and its settings
     player = this.physics.add.sprite(80, 80, "pc");
-    player.health = 3;
+    player.health = 5;
 
     // draw health sprites
     // figure out locations
@@ -99,7 +99,7 @@ export default class TestDungeon extends Phaser.Scene {
     this.anims.create({
       key: 'empty',
       frames: this.anims.generateFrameNumbers('heart', {start: 1, end: 2}),
-      frameRate: 2,
+      frameRate: 3,
     });
 
     this.anims.create({
@@ -202,7 +202,6 @@ export default class TestDungeon extends Phaser.Scene {
 
     this.physics.add.collider(enemies, player, (player, bear) => {
       var angle = Phaser.Math.Angle.Between(player.x, player.y, bear.x, bear.y);
-      player.health -= 1;
       player.isHit = true;
       console.log(angle);
       var angleX = 1;
@@ -216,8 +215,17 @@ export default class TestDungeon extends Phaser.Scene {
       if(angle <= 0 && angle > -1.5) {
         angleX = -1;
       }
-      player.setVelocityX(500 * angleX);
-      player.setVelocityY(500 * angleY);
+      player.setVelocityX(800 * angleX);
+      player.setVelocityY(800 * angleY);
+      player.x = player.x + 10 * angleX;
+      player.y = player.y + 10 * angleY;
+
+      player.health -= 1;
+      if(player.health >= 0){
+        const heartToBreak = hearts.children.entries[player.health];
+        console.log(heartToBreak);
+        heartToBreak.anims.play('empty', true);
+      }
 
     })
 
@@ -269,7 +277,7 @@ export default class TestDungeon extends Phaser.Scene {
 
     if (player.isHit) {
       console.log('hit!');
-      player.anims.play('hit');
+      player.anims.play('hit', true);
       player.isHit = false;
     }
 
