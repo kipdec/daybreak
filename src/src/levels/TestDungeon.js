@@ -3,14 +3,15 @@
 import Phaser from 'phaser'
 import { game } from '../index'
 import testDungeon from '../assets/tilemaps/test_dungeon_fullersize.json';
-import pcImg from '../assets/princess.png';
+import pcImg from '../assets/talia.png';
 import sS from '../assets/spritesheets/sprite_sheet.png';
 import fireball from '../assets/fireball.png';
-import reticle from '../assets/reticle.png';
+import reticleImg from '../assets/reticle.png';
 import Attack from '../common/Attack.js';
-import enemy from '../assets/pc.png'
+import enemyImg from '../assets/pc.png'
 
 var player;
+var reticle;
 var cursors;
 var gameOver = false;
 
@@ -23,12 +24,12 @@ export default class TestDungeon extends Phaser.Scene {
     this.load.image('tiles', sS);
     this.load.tilemapTiledJSON('map', testDungeon);
     this.load.spritesheet('pc',pcImg,{
-      frameWidth: 24,
-      frameHeight: 32
+      frameWidth: 20,
+      frameHeight: 20
     });
     this.load.image('attack', fireball);
-    this.load.image('reticle', reticle);
-    this.load.image('enemy', enemy)
+    this.load.image('enemy', enemyImg);
+    this.load.image('reticle', reticleImg);
   }
 
   create () {
@@ -40,9 +41,12 @@ export default class TestDungeon extends Phaser.Scene {
   
     // create map
     const floor = map.createStaticLayer('floor', tileset, 0, 0); 
+    const projectileWalls = map.createStaticLayer('projectilewalls', tileset, 0,0);
     const walls = map.createStaticLayer('walls', tileset, 0, 0);
     walls.setCollisionByExclusion(-1, true);
     const doors = map.createStaticLayer('doors', tileset, 0, 0);
+
+    projectileWalls.setCollisionByExclusion(-1, true);
 
     // The player and its settings
     player = this.physics.add.sprite(80, 80, "pc");
@@ -54,33 +58,23 @@ export default class TestDungeon extends Phaser.Scene {
   
     // Our player animations, turning, walking left and walking right.
     this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNumbers("pc", { start: 0, end: 1 }),
-      frameRate: 10,
+      key: "move",
+      frames: this.anims.generateFrameNumbers("pc", { start: 1, end: 2 }),
+      frameRate: 5,
       repeat: -1,
     });
   
     this.anims.create({
-      key: "turn",
+      key: "stand",
       frames: [{ key: "pc", frame: 0 }],
       frameRate: 20,
     });
   
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNumbers("pc", { start: 0, end: 1 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    
     // create crosshair which is controlled by player class
-    const reticle = this.physics.add.sprite(145, 145, 'reticle');
+    reticle = this.physics.add.sprite(145, 145, 'reticle');
     reticle.setOrigin(0.5, 0.5).setDisplaySize(50, 25).setCollideWorldBounds(true);
     
-    // create group for attack spell objects
-    let playerAttacks = this.physics.add.group({ classType: Attack, runChildUpdate: true });
-
-    //  Input Events
+        //  Input Events
     cursors = this.input.keyboard.addKeys(
       {up:Phaser.Input.Keyboard.KeyCodes.W,
       down:Phaser.Input.Keyboard.KeyCodes.S,
@@ -109,8 +103,10 @@ export default class TestDungeon extends Phaser.Scene {
       stair.setDisplaySize(stairsObject.width, stairsObject.height);
       stair.visible = false;
     });
-    // console.log(stairs);
     this.physics.add.collider(player, stairs, () => this.scene.start('TestDungeon'));
+    
+    // create group for attack spell objects
+    let playerAttacks = this.physics.add.group({ classType: Attack, runChildUpdate: true });
 
     enemiesObjects.forEach(enemiesObject => {
       let enemy = enemies.create(enemiesObject.x, enemiesObject.y).setOrigin(0);
@@ -121,9 +117,7 @@ export default class TestDungeon extends Phaser.Scene {
     console.log(enemies);
 
     // Fires attack from player on left click of mouse
-    this.input.on('pointerdown', function (pointer, time, lastFired) {
-      if (player.active === false)
-        return;
+    this.input.on('pointerdown', () => {
 
       // Get attack from attacks group
       var attack = playerAttacks.get().setActive(true).setVisible(true);
@@ -131,9 +125,12 @@ export default class TestDungeon extends Phaser.Scene {
       if (attack)
       {
         attack.shoot(player, reticle);
-        this.physics.add.collider(attack, walls);
       }
     }, this);
+
+    this.physics.add.collider(playerAttacks, projectileWalls, (attack) => playerAttacks.remove(attack, true, true));
+
+
 
     // Pointer lock will only work after mousedown
     game.canvas.addEventListener('mousedown', function () {
@@ -154,30 +151,34 @@ export default class TestDungeon extends Phaser.Scene {
   }
   
   update () {
+    const rot = Phaser.Math.Angle.Between(player.x, player.y, reticle.x, reticle.y);
+    player.rotation = Phaser.Math.Angle.Between(player.x, player.y, reticle.x, reticle.y);
     if (gameOver) {
       return;
     }
     
+    let moving = false;
+    
+    player.setVelocityX(0);
+    player.setVelocityY(0);
+
     if (cursors.left.isDown) {
       player.setVelocityX(-60);
-
-      player.anims.play("left", true);
+      moving = true;
     } else if (cursors.right.isDown) {
       player.setVelocityX(60);
-
-      player.anims.play("right", true);
-    } else {
-      player.setVelocityX(0);
-
-      player.anims.play("turn");
-    }
+      moving = true;
+    } 
 
     if (cursors.up.isDown) {
       player.setVelocityY(-60);
+      moving = true;
     } else if (cursors.down.isDown) {
-      player.setVelocityY(60)
-    } else {
-      player.setVelocityY(0)
+      player.setVelocityY(60);
+      moving = true;
+
     }
+
+    moving ? player.anims.play('move', true) : player.anims.play('stand');
   }
 }
