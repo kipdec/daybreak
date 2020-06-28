@@ -221,11 +221,11 @@ export default class TestDungeon extends Phaser.Scene {
       player.y = player.y + 10 * angleY;
 
       player.health -= 1;
-      if(player.health >= 0){
-        const heartToBreak = hearts.children.entries[player.health];
-        console.log(heartToBreak);
-        heartToBreak.anims.play('empty', true);
-      }
+      if(player.health <= 0) return this.scene.start('TestDungeon');
+
+      const heartToBreak = hearts.children.entries[player.health];
+      console.log(heartToBreak);
+      heartToBreak.anims.play('empty', true);
 
     })
 
