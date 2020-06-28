@@ -3,7 +3,7 @@
 import Phaser from 'phaser'
 import { game } from '../index'
 import testDungeon from '../assets/tilemaps/test_dungeon_fullersize.json';
-import pcImg from '../assets/princess_right.png';
+import pcImg from '../assets/talia.png';
 import sS from '../assets/spritesheets/sprite_sheet.png';
 import fireball from '../assets/fireball.png';
 import reticleImg from '../assets/reticle.png';
@@ -23,8 +23,8 @@ export default class TestDungeon extends Phaser.Scene {
     this.load.image('tiles', sS);
     this.load.tilemapTiledJSON('map', testDungeon);
     this.load.spritesheet('pc',pcImg,{
-      frameWidth: 23,
-      frameHeight: 17
+      frameWidth: 20,
+      frameHeight: 20
     });
     this.load.image('attack', fireball);
     this.load.image('reticle', reticleImg);
