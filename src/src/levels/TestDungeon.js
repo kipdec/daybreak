@@ -137,6 +137,7 @@ export default class TestDungeon extends Phaser.Scene {
     }, this);
     console.log(player);
     console.log(reticle);
+
   }
   
   update () {
@@ -166,6 +167,11 @@ export default class TestDungeon extends Phaser.Scene {
       player.setVelocityY(60)
     } else {
       player.setVelocityY(0)
+    }
+
+    if (cursors.space.isDown) {
+      player.x = reticle.x
+      player.y = reticle.y
     }
   }
 }
