@@ -123,7 +123,6 @@ export default class TestDungeon extends Phaser.Scene {
     this.physics.add.collider(playerAttacks, projectileWalls, (attack) => playerAttacks.remove(attack, true, true));
 
 
-
     // Pointer lock will only work after mousedown
     game.canvas.addEventListener('mousedown', function () {
       game.input.mouse.requestPointerLock();
@@ -140,12 +139,6 @@ export default class TestDungeon extends Phaser.Scene {
       reticle.x += pointer.movementX;
       reticle.y += pointer.movementY;
     }, this);
-<<<<<<< HEAD
-    console.log(player);
-    console.log(reticle);
-
-=======
->>>>>>> 66d6a19b7c535b989cd649504155a5394cc1341f
   }
   
   update () {
@@ -178,8 +171,15 @@ export default class TestDungeon extends Phaser.Scene {
     }
 
     if (cursors.space.isDown) {
-      player.x = reticle.x
-      player.y = reticle.y
+      console.log(cursors.space.repeats)
+      if (cursors.space.repeats > 1) {
+        player.x = player.x
+        player.y = player.y
+      } else {
+        player.x += 5
+        player.y += 5
+        console.log(cursors.space.timeDown)
+      }
     }
   }
 }
