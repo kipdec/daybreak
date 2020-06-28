@@ -10,6 +10,7 @@ import reticleImg from '../assets/reticle.png';
 import Attack from '../common/Attack.js';
 import enemyImg from '../assets/pc.png'
 import bearImg from '../assets/bear.png';
+import heartImg from '../assets/heart.png';
 
 var player;
 var reticle;
@@ -35,6 +36,10 @@ export default class TestDungeon extends Phaser.Scene {
       frameHeight: 15
     });
     this.load.image('reticle', reticleImg);
+    this.load.spritesheet('heart', heartImg, {
+      frameWidth: 7,
+      frameHeight: 6
+    });
   }
 
   create () {
@@ -56,11 +61,52 @@ export default class TestDungeon extends Phaser.Scene {
     // The player and its settings
     player = this.physics.add.sprite(80, 80, "pc");
     player.health = 3;
+
+    // draw health sprites
+    // figure out locations
+    const overlayObjects = map.getObjectLayer('overlay')['objects'];
+    const heartObject = overlayObjects.filter(o => o.name == 'heart')[0];
+    console.log(heartObject);
+    // 1px space between
+    var heartLocations = []
+    // Calculate where the hearts should be
+    for (var i = 0; i < player.health; i++){
+      const buffSize = 8;
+      const buffer = buffSize * (i );
+      const coordinates = {
+        x: heartObject.x + buffer,
+        y: heartObject.y
+      };
+
+      heartLocations.push(coordinates);
+    }
+
+    console.log(heartLocations);
+
+    // Add hearts
+    var hearts = this.physics.add.group();
+    heartLocations.forEach(location => {
+      const heartSprite = this.physics.add.sprite(location.x, location.y, 'heart');
+      hearts.add(heartSprite);
+    });
   
     // Player physics properties.
     player.setCollideWorldBounds(true);
+    player.isHit = false;
     
     this.physics.add.collider(player, walls);
+
+    this.anims.create({
+      key: 'empty',
+      frames: this.anims.generateFrameNumbers('heart', {start: 1, end: 2}),
+      frameRate: 2,
+    });
+
+    this.anims.create({
+      key: 'full',
+      frames: [{ key: 'heart', frame: 0 }],
+      frameRate: 10,
+    });
   
     // Our player animations, turning, walking left and walking right.
     this.anims.create({
@@ -74,6 +120,12 @@ export default class TestDungeon extends Phaser.Scene {
       key: "stand",
       frames: [{ key: "pc", frame: 0 }],
       frameRate: 20,
+    });
+
+    this.anims.create({
+      key: 'hit',
+      frames: this.anims.generateFrameNumbers('pc', { start: 3, end: 4 }),
+      frameRate: 5,
     });
   
     // create crosshair which is controlled by player class
@@ -123,7 +175,6 @@ export default class TestDungeon extends Phaser.Scene {
     console.log(player.health);
     console.log(enemies)
 
-    this.physics.add.collider(enemies, player, () => {console.log('collision')})
 
     // Fires attack from player on left or right (trying to fix right) click of mouse
     this.input.on('pointerdown', () => {
@@ -147,8 +198,28 @@ export default class TestDungeon extends Phaser.Scene {
       if(bearSprite.health <= 0) {
         enemies.remove(bearSprite, true, true);
       }
-    })
+    });
 
+    this.physics.add.collider(enemies, player, (player, bear) => {
+      var angle = Phaser.Math.Angle.Between(player.x, player.y, bear.x, bear.y);
+      player.health -= 1;
+      player.isHit = true;
+      console.log(angle);
+      var angleX = 1;
+      var angleY = 1;
+      // knock player back on opposite angle
+      if(angle > 0){
+        angleY = -1;
+        if(angle < 1.5) angleX = -1;
+      }
+
+      if(angle <= 0 && angle > -1.5) {
+        angleX = -1;
+      }
+      player.setVelocityX(500 * angleX);
+      player.setVelocityY(500 * angleY);
+
+    })
 
     // Pointer lock will only work after mousedown
     game.canvas.addEventListener('mousedown', function () {
@@ -196,6 +267,12 @@ export default class TestDungeon extends Phaser.Scene {
       moving = true;
     }
 
-    moving ? player.anims.play('move', true) : player.anims.play('stand');
+    if (player.isHit) {
+      console.log('hit!');
+      player.anims.play('hit');
+      player.isHit = false;
+    }
+
+    moving && !player.isHit ? player.anims.play('move', true) : player.anims.play('stand');
   }
 }
