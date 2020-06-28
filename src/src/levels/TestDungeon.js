@@ -3,7 +3,7 @@
 import Phaser from 'phaser'
 import { game } from '../index'
 import testDungeon from '../assets/tilemaps/test_dungeon_fullersize.json';
-import pcImg from '../assets/princess_right.png';
+import pcImg from '../assets/talia.png';
 import sS from '../assets/spritesheets/sprite_sheet.png';
 import fireball from '../assets/fireball.png';
 import reticleImg from '../assets/reticle.png';
@@ -23,8 +23,8 @@ export default class TestDungeon extends Phaser.Scene {
     this.load.image('tiles', sS);
     this.load.tilemapTiledJSON('map', testDungeon);
     this.load.spritesheet('pc',pcImg,{
-      frameWidth: 23,
-      frameHeight: 17
+      frameWidth: 20,
+      frameHeight: 20
     });
     this.load.image('attack', fireball);
     this.load.image('reticle', reticleImg);
@@ -45,7 +45,7 @@ export default class TestDungeon extends Phaser.Scene {
     const doors = map.createStaticLayer('doors', tileset, 0, 0);
 
     projectileWalls.setCollisionByExclusion(-1, true);
-    console.log(projectileWalls);
+
     // The player and its settings
     player = this.physics.add.sprite(80, 80, "pc");
   
@@ -56,25 +56,18 @@ export default class TestDungeon extends Phaser.Scene {
   
     // Our player animations, turning, walking left and walking right.
     this.anims.create({
-      key: "left",
-      frames: this.anims.generateFrameNumbers("pc", { start: 0, end: 1 }),
-      frameRate: 10,
+      key: "move",
+      frames: this.anims.generateFrameNumbers("pc", { start: 1, end: 2 }),
+      frameRate: 5,
       repeat: -1,
     });
   
     this.anims.create({
-      key: "turn",
+      key: "stand",
       frames: [{ key: "pc", frame: 0 }],
       frameRate: 20,
     });
   
-    this.anims.create({
-      key: "right",
-      frames: this.anims.generateFrameNumbers("pc", { start: 0, end: 1 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-    
     // create crosshair which is controlled by player class
     reticle = this.physics.add.sprite(145, 145, 'reticle');
     reticle.setOrigin(0.5, 0.5).setDisplaySize(50, 25).setCollideWorldBounds(true);
@@ -101,7 +94,6 @@ export default class TestDungeon extends Phaser.Scene {
       stair.setDisplaySize(stairsObject.width, stairsObject.height);
       stair.visible = false;
     });
-    console.log(stairs);
 
     this.physics.add.collider(player, stairs, () => this.scene.start('TestDungeon'));
     
@@ -149,26 +141,28 @@ export default class TestDungeon extends Phaser.Scene {
       return;
     }
     
+    let moving = false;
+    
+    player.setVelocityX(0);
+    player.setVelocityY(0);
+
     if (cursors.left.isDown) {
       player.setVelocityX(-60);
-
-      player.anims.play("left", true);
+      moving = true;
     } else if (cursors.right.isDown) {
       player.setVelocityX(60);
-
-      player.anims.play("right", true);
-    } else {
-      player.setVelocityX(0);
-
-      player.anims.play("turn");
-    }
+      moving = true;
+    } 
 
     if (cursors.up.isDown) {
       player.setVelocityY(-60);
+      moving = true;
     } else if (cursors.down.isDown) {
-      player.setVelocityY(60)
-    } else {
-      player.setVelocityY(0)
+      player.setVelocityY(60);
+      moving = true;
+
     }
+
+    moving ? player.anims.play('move', true) : player.anims.play('stand');
   }
 }
