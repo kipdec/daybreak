@@ -81,12 +81,14 @@ export default class TestDungeon extends Phaser.Scene {
     reticle.setOrigin(0.5, 0.5).setDisplaySize(50, 25).setCollideWorldBounds(true);
     
       //  Input Events
-    cursors = this.input.keyboard.addKeys(
-      {up:Phaser.Input.Keyboard.KeyCodes.W,
+    cursors = this.input.keyboard.addKeys({
+      up:Phaser.Input.Keyboard.KeyCodes.W,
       down:Phaser.Input.Keyboard.KeyCodes.S,
       left:Phaser.Input.Keyboard.KeyCodes.A,
       right:Phaser.Input.Keyboard.KeyCodes.D,
-      space:Phaser.Input.Keyboard.KeyCodes.SPACE});
+      space:Phaser.Input.Keyboard.KeyCodes.SPACE,
+      shift:Phaser.Input.Keyboard.KeyCodes.SHIFT,
+    });
 
     // add doors
     var stairsObjects = map.getObjectLayer('stairs')['objects'];
@@ -116,6 +118,7 @@ export default class TestDungeon extends Phaser.Scene {
 
     enemiesObjects.forEach(enemiesObject => {
       const bearSprite = this.physics.add.sprite(enemiesObject.x, enemiesObject.y, 'bear')
+      bearSprite.day = true
       bearSprite.health = 3;
       enemies.add(bearSprite);
     });
@@ -124,6 +127,7 @@ export default class TestDungeon extends Phaser.Scene {
     console.log(enemies)
 
     this.physics.add.collider(enemies, player, () => {console.log('collision')})
+
 
     // Fires attack from player on left or right (trying to fix right) click of mouse
     this.input.on('pointerdown', () => {
@@ -141,9 +145,12 @@ export default class TestDungeon extends Phaser.Scene {
     this.physics.add.collider(playerAttacks, projectileWalls, (attack) => playerAttacks.remove(attack, true, true));
     this.physics.add.collider(playerAttacks, enemies, (attack, enemy) => {
       playerAttacks.remove(attack, true, true);
-      // decrement health counter on enemy
-      enemy.health -= 1;
-      console.log(enemy.health);
+      // check enemy element and match to attack element
+      if (enemy.day === player.attackDay) {
+        // decrement health counter on enemy
+        enemy.health -= 1;
+        console.log(enemy.health);
+      }
       if(enemy.health <= 0) {
         enemies.remove(enemy, true, true);
       }
@@ -166,6 +173,12 @@ export default class TestDungeon extends Phaser.Scene {
       reticle.x += pointer.movementX;
       reticle.y += pointer.movementY;
     }, this);
+
+    const attackDay = true;
+    player.attackDay = true;
+    console.log(attackDay)
+
+    
   }
   
   update () {
@@ -197,5 +210,11 @@ export default class TestDungeon extends Phaser.Scene {
     }
 
     moving ? player.anims.play('move', true) : player.anims.play('stand');
+
+    if (cursors.shift.isDown) {
+      player.attackDay = !player.attackDay
+      console.log(`switched to ${player.attackDay === true ? 'day' : 'night'}!`)
+      // need a way to slow down this switch
+    }
   }
 }
