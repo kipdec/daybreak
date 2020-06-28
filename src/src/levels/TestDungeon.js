@@ -74,7 +74,7 @@ export default class TestDungeon extends Phaser.Scene {
     reticle = this.physics.add.sprite(145, 145, 'reticle');
     reticle.setOrigin(0.5, 0.5).setDisplaySize(50, 25).setCollideWorldBounds(true);
     
-        //  Input Events
+      //  Input Events
     cursors = this.input.keyboard.addKeys(
       {up:Phaser.Input.Keyboard.KeyCodes.W,
       down:Phaser.Input.Keyboard.KeyCodes.S,
@@ -92,7 +92,7 @@ export default class TestDungeon extends Phaser.Scene {
     // add enemies
     var enemiesObjects = map.getObjectLayer('enemies')['objects'];
     var enemies = this.physics.add.group({
-      immovable: false,
+      immovable: true,
       visible: true
     })
 
@@ -109,14 +109,18 @@ export default class TestDungeon extends Phaser.Scene {
     let playerAttacks = this.physics.add.group({ classType: Attack, runChildUpdate: true });
 
     enemiesObjects.forEach(enemiesObject => {
-      let enemy = enemies.create(enemiesObject.x, enemiesObject.y).setOrigin(0);
-      enemy.setDisplaySize(enemiesObject.width, enemiesObject.height);
-      enemy.visible = true;
-      enemy = this.physics.add.sprite(120, 120, "enemy");
+      const enemySprite = this.physics.add.sprite(enemiesObject.x, enemiesObject.y, 'enemy')
+      const enemy = enemies.add(enemySprite);
+      // enemy.visible = true;
+      // this.physics.add.sprite(120, 120, "enemy");
+      // this.physics.add.collider(enemy, player);
+      // this.physics.add.collider(enemy, walls, () => console.log('collision'));
     });
-    console.log(enemies);
 
-    // Fires attack from player on left click of mouse
+    this.physics.add.collider(enemies, player, () => {console.log('collision')})
+    // this.physics.add.collider(enemies, walls)
+
+    // Fires attack from player on left or right (trying to fix right) click of mouse
     this.input.on('pointerdown', () => {
 
       // Get attack from attacks group
@@ -128,8 +132,12 @@ export default class TestDungeon extends Phaser.Scene {
       }
     }, this);
 
+    // attack colliders
     this.physics.add.collider(playerAttacks, projectileWalls, (attack) => playerAttacks.remove(attack, true, true));
-
+    this.physics.add.collider(playerAttacks, enemies, (attack) => {
+      playerAttacks.remove(attack, true, true);
+      // decrement health counter on player(?)
+    })
 
 
     // Pointer lock will only work after mousedown
@@ -176,7 +184,6 @@ export default class TestDungeon extends Phaser.Scene {
     } else if (cursors.down.isDown) {
       player.setVelocityY(60);
       moving = true;
-
     }
 
     moving ? player.anims.play('move', true) : player.anims.play('stand');
