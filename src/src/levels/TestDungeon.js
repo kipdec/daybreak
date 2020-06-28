@@ -55,6 +55,7 @@ export default class TestDungeon extends Phaser.Scene {
 
     // The player and its settings
     player = this.physics.add.sprite(80, 80, "pc");
+    player.health = 3;
   
     // Player physics properties.
     player.setCollideWorldBounds(true);
@@ -115,8 +116,12 @@ export default class TestDungeon extends Phaser.Scene {
 
     enemiesObjects.forEach(enemiesObject => {
       const bearSprite = this.physics.add.sprite(enemiesObject.x, enemiesObject.y, 'bear')
-      const enemy = enemies.add(bearSprite);
+      bearSprite.health = 3;
+      enemies.add(bearSprite);
     });
+
+    console.log(player.health);
+    console.log(enemies)
 
     this.physics.add.collider(enemies, player, () => {console.log('collision')})
 
@@ -134,9 +139,14 @@ export default class TestDungeon extends Phaser.Scene {
 
     // attack colliders
     this.physics.add.collider(playerAttacks, projectileWalls, (attack) => playerAttacks.remove(attack, true, true));
-    this.physics.add.collider(playerAttacks, enemies, (attack) => {
+    this.physics.add.collider(playerAttacks, enemies, (attack, enemy) => {
       playerAttacks.remove(attack, true, true);
-      // decrement health counter on player(?)
+      // decrement health counter on enemy
+      enemy.health -= 1;
+      console.log(enemy.health);
+      if(enemy.health <= 0) {
+        enemies.remove(enemy, true, true);
+      }
     })
 
 
