@@ -1,6 +1,6 @@
 // TestDungeon.js
 
-import Phaser from 'phaser'
+import Phaser, { GameObjects } from 'phaser'
 import { game } from '../index'
 import testDungeon from '../assets/tilemaps/test_dungeon_fullersize.json';
 import pcImg from '../assets/talia.png';
@@ -116,6 +116,8 @@ export default class TestDungeon extends Phaser.Scene {
       // this.physics.add.collider(enemy, player);
       // this.physics.add.collider(enemy, walls, () => console.log('collision'));
     });
+
+    console.log(enemies)
 
     this.physics.add.collider(enemies, player, () => {console.log('collision')})
     // this.physics.add.collider(enemies, walls)
