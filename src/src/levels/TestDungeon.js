@@ -1,6 +1,6 @@
 // TestDungeon.js
 
-import Phaser from 'phaser'
+import Phaser, { GameObjects } from 'phaser'
 import { game } from '../index'
 import testDungeon from '../assets/tilemaps/test_dungeon_fullersize.json';
 import pcImg from '../assets/talia.png';
@@ -8,6 +8,7 @@ import sS from '../assets/spritesheets/sprite_sheet.png';
 import fireball from '../assets/fireball.png';
 import reticleImg from '../assets/reticle.png';
 import Attack from '../common/Attack.js';
+import enemyImg from '../assets/pc.png'
 
 var player;
 var reticle;
@@ -27,6 +28,7 @@ export default class TestDungeon extends Phaser.Scene {
       frameHeight: 20
     });
     this.load.image('attack', fireball);
+    this.load.image('enemy', enemyImg);
     this.load.image('reticle', reticleImg);
   }
 
@@ -72,7 +74,7 @@ export default class TestDungeon extends Phaser.Scene {
     reticle = this.physics.add.sprite(145, 145, 'reticle');
     reticle.setOrigin(0.5, 0.5).setDisplaySize(50, 25).setCollideWorldBounds(true);
     
-        //  Input Events
+      //  Input Events
     cursors = this.input.keyboard.addKeys(
       {up:Phaser.Input.Keyboard.KeyCodes.W,
       down:Phaser.Input.Keyboard.KeyCodes.S,
@@ -87,6 +89,13 @@ export default class TestDungeon extends Phaser.Scene {
       visible: false
     });
 
+    // add enemies
+    var enemiesObjects = map.getObjectLayer('enemies')['objects'];
+    var enemies = this.physics.add.group({
+      immovable: true,
+      visible: true
+    })
+
     //console.log(stairsObjects);
 
     stairsObjects.forEach(stairsObject => {
@@ -94,13 +103,26 @@ export default class TestDungeon extends Phaser.Scene {
       stair.setDisplaySize(stairsObject.width, stairsObject.height);
       stair.visible = false;
     });
-
     this.physics.add.collider(player, stairs, () => this.scene.start('TestDungeon'));
     
     // create group for attack spell objects
     let playerAttacks = this.physics.add.group({ classType: Attack, runChildUpdate: true });
 
-    // Fires attack from player on left click of mouse
+    enemiesObjects.forEach(enemiesObject => {
+      const enemySprite = this.physics.add.sprite(enemiesObject.x, enemiesObject.y, 'enemy')
+      const enemy = enemies.add(enemySprite);
+      // enemy.visible = true;
+      // this.physics.add.sprite(120, 120, "enemy");
+      // this.physics.add.collider(enemy, player);
+      // this.physics.add.collider(enemy, walls, () => console.log('collision'));
+    });
+
+    console.log(enemies)
+
+    this.physics.add.collider(enemies, player, () => {console.log('collision')})
+    // this.physics.add.collider(enemies, walls)
+
+    // Fires attack from player on left or right (trying to fix right) click of mouse
     this.input.on('pointerdown', () => {
 
       // Get attack from attacks group
@@ -112,8 +134,12 @@ export default class TestDungeon extends Phaser.Scene {
       }
     }, this);
 
+    // attack colliders
     this.physics.add.collider(playerAttacks, projectileWalls, (attack) => playerAttacks.remove(attack, true, true));
-
+    this.physics.add.collider(playerAttacks, enemies, (attack) => {
+      playerAttacks.remove(attack, true, true);
+      // decrement health counter on player(?)
+    })
 
 
     // Pointer lock will only work after mousedown
@@ -160,7 +186,6 @@ export default class TestDungeon extends Phaser.Scene {
     } else if (cursors.down.isDown) {
       player.setVelocityY(60);
       moving = true;
-
     }
 
     moving ? player.anims.play('move', true) : player.anims.play('stand');
