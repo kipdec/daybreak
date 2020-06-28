@@ -11,8 +11,11 @@ import Attack from '../common/Attack.js';
 import enemyImg from '../assets/pc.png'
 import bearImg from '../assets/bear.png';
 import heartImg from '../assets/heart.png';
+import orangeShield from '../assets/orangeShield.png'
+import blueShield from '../assets/blueShield.png'
 
 var player;
+var shield;
 var reticle;
 var cursors;
 var gameOver = false;
@@ -40,6 +43,8 @@ export default class TestDungeon extends Phaser.Scene {
       frameWidth: 7,
       frameHeight: 6
     });
+    this.load.image('dayShield', orangeShield)
+    this.load.image('nightShield', blueShield)
   }
 
   create () {
@@ -62,7 +67,7 @@ export default class TestDungeon extends Phaser.Scene {
     player = this.physics.add.sprite(80, 80, "pc");
     player.health = 5;
     player.attackDay = true;
-
+    
     // draw health sprites
     // figure out locations
     const overlayObjects = map.getObjectLayer('overlay')['objects'];
@@ -179,19 +184,50 @@ export default class TestDungeon extends Phaser.Scene {
     console.log(player.health);
     console.log(enemies)
 
+    var shields = this.physics.add.group({
+      immovable: true,
+      visible: false,
+    })
 
+    // Fires event on click
+    this.input.on('pointerdown', (pointer) => {
+      // left click/attack
+      if (pointer.leftButtonDown()) {
+        // Get attack from attacks group
+        var attack = playerAttacks.get().setActive(true).setVisible(true);
+  
+        if (attack)
+        {
+          attack.shoot(player, reticle);
+        }
 
-    // Fires attack from player on left or right (trying to fix right) click of mouse
-    this.input.on('pointerdown', () => {
+      } else {
+        if (player.attackDay) {
+          const nightShield = this.physics.add.sprite(player.x, player.y, 'nightShield')
+          nightShield.inputEnabled = true
 
-      // Get attack from attacks group
-      var attack = playerAttacks.get().setActive(true).setVisible(true);
+          this.input.on('pointerup', () => {
+            nightShield.destroy()
+          })
 
-      if (attack)
-      {
-        attack.shoot(player, reticle);
+          // collision stuff here
+
+        } else {
+          const dayShield = this.physics.add.sprite(player.x, player.y, 'dayShield')
+          dayShield.inputEnabled = true
+          
+          this.input.on('pointerup', () => {
+            dayShield.destroy()
+          })
+
+          // collision stuff here
+
+        }
+        
+      
       }
     }, this);
+
 
     // attack colliders
     this.physics.add.collider(playerAttacks, projectileWalls, (attack) => playerAttacks.remove(attack, true, true));
@@ -271,7 +307,6 @@ export default class TestDungeon extends Phaser.Scene {
       return;
     }
     
-    let moving = false;
     
     player.setVelocityX(0);
     player.setVelocityY(0);
@@ -297,6 +332,8 @@ export default class TestDungeon extends Phaser.Scene {
       player.anims.play('hit', true);
       player.isHit = false;
     }
+
+    let moving = false;
 
     moving && !player.isHit ? player.anims.play('move', true) : player.anims.play('stand');
 
