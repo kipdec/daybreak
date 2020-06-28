@@ -56,6 +56,7 @@ export default class TestDungeon extends Phaser.Scene {
     // The player and its settings
     player = this.physics.add.sprite(80, 80, "pc");
     player.health = 3;
+    player.attackDay = true;
   
     // Player physics properties.
     player.setCollideWorldBounds(true);
@@ -168,17 +169,16 @@ export default class TestDungeon extends Phaser.Scene {
         game.input.mouse.releasePointerLock();
     }, 0, this);
 
+    this.input.keyboard.on('keydown_SHIFT', () => {
+      player.attackDay = !player.attackDay;
+      console.log(`switched to ${player.attackDay ? 'day' : 'night'}`);
+    });
+
     // Move reticle upon pointer move
     this.input.on('pointermove', function (pointer) {
       reticle.x += pointer.movementX;
       reticle.y += pointer.movementY;
     }, this);
-
-    const attackDay = true;
-    player.attackDay = true;
-    console.log(attackDay)
-
-    
   }
   
   update () {
@@ -211,10 +211,10 @@ export default class TestDungeon extends Phaser.Scene {
 
     moving ? player.anims.play('move', true) : player.anims.play('stand');
 
-    if (cursors.shift.isDown) {
-      player.attackDay = !player.attackDay
-      console.log(`switched to ${player.attackDay === true ? 'day' : 'night'}!`)
-      // need a way to slow down this switch
-    }
+    //if (cursors.shift.isDown) {
+    //  player.attackDay = !player.attackDay
+    //  console.log(`switched to ${player.attackDay === true ? 'day' : 'night'}!`)
+    //  // need a way to slow down this switch
+    //}
   }
 }
