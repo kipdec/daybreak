@@ -237,7 +237,7 @@ export default class TestDungeon extends Phaser.Scene {
       player.health -= 1;
       if(player.health <= 0) {
         game.input.mouse.releasePointerLock();
-        this.scene.start('Title');
+        this.scene.start('GameOver');
       }
 
       const heartToBreak = hearts.children.entries[player.health];
