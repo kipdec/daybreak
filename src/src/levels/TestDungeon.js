@@ -247,6 +247,7 @@ export default class TestDungeon extends Phaser.Scene {
     });
 
     this.physics.add.collider(enemies, player, (player, bear) => {
+<<<<<<< HEAD
       if (shieldUp && !player.attackDay) {
         console.log('Blocked!')
       } else {
@@ -279,6 +280,32 @@ export default class TestDungeon extends Phaser.Scene {
         const heartToBreak = hearts.children.entries[player.health];
         console.log(heartToBreak);
         heartToBreak.anims.play('empty', true);
+=======
+      var angle = Phaser.Math.Angle.Between(player.x, player.y, bear.x, bear.y);
+      player.isHit = true;
+      console.log(angle);
+      var angleX = 1;
+      var angleY = 1;
+      // knock player back on opposite angle
+      if(angle > 0){
+        angleY = -1;
+        if(angle < 1.5) angleX = -1;
+      }
+
+      if(angle <= 0 && angle > -1.5) {
+        angleX = -1;
+      }
+      
+      player.setVelocityX(800 * angleX);
+      player.setVelocityY(800 * angleY);
+      player.x = player.x + 10 * angleX;
+      player.y = player.y + 10 * angleY;
+
+      player.health -= 1;
+      if(player.health <= 0) {
+        game.input.mouse.releasePointerLock();
+        this.scene.start('GameOver');
+>>>>>>> 68e5a867fee57f330f59a7e64b1606fd81a7e423
       }
     })
 
