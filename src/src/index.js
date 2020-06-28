@@ -7,6 +7,7 @@ import Controls from './levels/Controls.js';
 import Credits from './levels/Credits.js';
 import About from './levels/About.js';
 import GameOver from './levels/GameOver.js';
+import YouWin from './levels/YouWin.js';
 
 document.body.style.cursor = 'none';  // removes cursor so we can use crosshair instead
 
@@ -22,10 +23,10 @@ var config = {
   physics: {
     default: "arcade",
     arcade: {
-      debug: true
+      debug: false
     }
   },
-  scene: [Title,TestDungeon,Controls,Credits,About,GameOver],
+  scene: [Title,TestDungeon,Controls,Credits,About,GameOver,YouWin],
 };
 
 export var game = new Phaser.Game(config);

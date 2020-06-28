@@ -4,7 +4,7 @@
      "export":
         {
          "format":"json",
-         "target":"gameover.json"
+         "target":"YouWin.json"
         }
     },
  "height":36,
@@ -28,38 +28,15 @@
          "name":"buttons",
          "objects":[
                 {
-                 "height":36.3600590260698,
-                 "id":2,
+                 "height":43.2070831283817,
+                 "id":1,
                  "name":"back",
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":220.28529267093,
-                 "x":38.2488932611904,
-                 "y":246.965076242007
-                }],
-         "opacity":1,
-         "type":"objectgroup",
-         "visible":true,
-         "x":0,
-         "y":0
-        }, 
-        {
-         "draworder":"topdown",
-         "id":3,
-         "name":"overlay",
-         "objects":[
-                {
-                 "height":0,
-                 "id":3,
-                 "name":"score",
-                 "point":true,
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":0,
-                 "x":141.190359075258,
-                 "y":85.2336448598131
+                 "width":216.271519921299,
+                 "x":38.7211018199705,
+                 "y":240.826364977865
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -67,8 +44,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
- "nextobjectid":4,
+ "nextlayerid":3,
+ "nextobjectid":2,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.4.1",
@@ -77,11 +54,11 @@
         {
          "columns":36,
          "firstgid":1,
-         "image":"..\/..\/..\/..\/art\/programmer_art\/game_over.png",
+         "image":"..\/..\/..\/..\/art\/programmer_art\/win_screen.png",
          "imageheight":288,
          "imagewidth":288,
          "margin":0,
-         "name":"gameover_tset",
+         "name":"youwin_tset",
          "spacing":0,
          "tilecount":1296,
          "tileheight":8,

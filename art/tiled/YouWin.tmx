@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="36" height="36" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="4">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="36" height="36" tilewidth="8" tileheight="8" infinite="0" nextlayerid="3" nextobjectid="2">
  <editorsettings>
-  <export target="../../src/src/assets/tilemaps/gameover.json" format="json"/>
+  <export target="../../src/src/assets/tilemaps/YouWin.json" format="json"/>
  </editorsettings>
- <tileset firstgid="1" name="gameover_tset" tilewidth="8" tileheight="8" tilecount="1296" columns="36">
-  <image source="../programmer_art/game_over.png" width="288" height="288"/>
+ <tileset firstgid="1" name="youwin_tset" tilewidth="8" tileheight="8" tilecount="1296" columns="36">
+  <image source="../programmer_art/win_screen.png" width="288" height="288"/>
  </tileset>
  <layer id="1" name="background" width="36" height="36">
   <data encoding="csv">
@@ -47,11 +47,6 @@
 </data>
  </layer>
  <objectgroup id="2" name="buttons">
-  <object id="2" name="back" x="38.2489" y="246.965" width="220.285" height="36.3601"/>
- </objectgroup>
- <objectgroup id="3" name="overlay">
-  <object id="3" name="score" x="141.19" y="85.2336">
-   <point/>
-  </object>
+  <object id="1" name="back" x="38.7211" y="240.826" width="216.272" height="43.2071"/>
  </objectgroup>
 </map>

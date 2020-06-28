@@ -10,14 +10,18 @@ import reticleImg from '../assets/reticle.png';
 import Attack from '../common/Attack.js';
 import enemyImg from '../assets/pc.png'
 import bearImg from '../assets/bear.png';
+import darkBearImg from '../assets/darkbear.png';
 import heartImg from '../assets/heart.png';
 
 var player;
 var enemies;
 var reticle;
 var cursors;
+var score;
+var scoreText;
 var gameOver = false;
 const bearSpeed = 10;
+const requestLock = () => game.input.mouse.requestPointerLock();
 
 export default class TestDungeon extends Phaser.Scene {
   constructor() {
@@ -37,6 +41,10 @@ export default class TestDungeon extends Phaser.Scene {
       frameWidth: 14,
       frameHeight: 15
     });
+    this.load.spritesheet('darkBear', darkBearImg, {
+      frameWidth: 14,
+      frameHeight: 15
+    });
     this.load.image('reticle', reticleImg);
     this.load.spritesheet('heart', heartImg, {
       frameWidth: 7,
@@ -45,6 +53,7 @@ export default class TestDungeon extends Phaser.Scene {
   }
 
   create () {
+    score = 0;
     // adding tilemap
     const map = this.make.tilemap({key: 'map'});
   
@@ -69,7 +78,8 @@ export default class TestDungeon extends Phaser.Scene {
     // figure out locations
     const overlayObjects = map.getObjectLayer('overlay')['objects'];
     const heartObject = overlayObjects.filter(o => o.name == 'heart')[0];
-    console.log(heartObject);
+    const scoreObject = overlayObjects.filter(o => o.name == 'score')[0]; 
+    scoreText = this.add.text(scoreObject.x, scoreObject.y, score, { fontSixe: '5px', fill: '#fff' });
     // 1px space between
     var heartLocations = []
     // Calculate where the hearts should be
@@ -83,8 +93,6 @@ export default class TestDungeon extends Phaser.Scene {
 
       heartLocations.push(coordinates);
     }
-
-    console.log(heartLocations);
 
     // Add hearts
     var hearts = this.physics.add.group();
@@ -159,8 +167,6 @@ export default class TestDungeon extends Phaser.Scene {
       visible: true
     })
 
-    //console.log(stairsObjects);
-
     stairsObjects.forEach(stairsObject => {
       const stair = stairs.create(stairsObject.x, stairsObject.y - 8).setOrigin(0);
       stair.setDisplaySize(stairsObject.width, stairsObject.height);
@@ -172,16 +178,13 @@ export default class TestDungeon extends Phaser.Scene {
     let playerAttacks = this.physics.add.group({ classType: Attack, runChildUpdate: true });
 
     enemiesObjects.forEach(enemiesObject => {
-      const bearSprite = this.physics.add.sprite(enemiesObject.x, enemiesObject.y, 'bear')
-      bearSprite.day = true
+      const day = Math.random() >= 0.5;
+      const bearSprite = this.physics.add.sprite(enemiesObject.x, enemiesObject.y, day ? 'bear' : 'darkBear')
+      bearSprite.day = day;
       bearSprite.health = 3;
+      bearSprite.random = Math.floor((Math.random() * 3) + 1);
       enemies.add(bearSprite);
     });
-
-    console.log(player.health);
-    console.log(enemies)
-
-
 
     // Fires attack from player on left or right (trying to fix right) click of mouse
     this.input.on('pointerdown', () => {
@@ -204,19 +207,21 @@ export default class TestDungeon extends Phaser.Scene {
       if (bearSprite.day === player.attackDay) {
         // decrement health counter on enemy
         bearSprite.health -= 1;
-        console.log(bearSprite.health);
       }
       if(bearSprite.health <= 0) {
+        score += bearSprite.random * 100;
+        scoreText.setText(score);
+        console.log(score);
         enemies.remove(bearSprite, true, true);
       }
 
       
     });
 
+
     this.physics.add.collider(enemies, player, (player, bear) => {
       var angle = Phaser.Math.Angle.Between(player.x, player.y, bear.x, bear.y);
       player.isHit = true;
-      console.log(angle);
       var angleX = 1;
       var angleY = 1;
       // knock player back on opposite angle
@@ -237,19 +242,17 @@ export default class TestDungeon extends Phaser.Scene {
       player.health -= 1;
       if(player.health <= 0) {
         game.input.mouse.releasePointerLock();
-        this.scene.start('GameOver');
+        game.canvas.removeEventListener('mousedown', requestLock());
+        this.scene.start('GameOver', { score: score});
       }
 
       const heartToBreak = hearts.children.entries[player.health];
-      console.log(heartToBreak);
       heartToBreak.anims.play('empty', true);
 
     })
 
     // Pointer lock will only work after mousedown
-    game.canvas.addEventListener('mousedown', function () {
-      game.input.mouse.requestPointerLock();
-    });
+    game.canvas.addEventListener('mousedown', requestLock());
 
     // Exit pointer lock when Q or escape (by default) is pressed.
     this.input.keyboard.on('keydown_Q', function (event) {
@@ -298,22 +301,25 @@ export default class TestDungeon extends Phaser.Scene {
     }
 
     if (player.isHit) {
-      console.log('hit!');
       player.anims.play('hit', true);
       player.isHit = false;
     }
 
     // see if the bears are dead
     const enemyCount = enemies.children.entries.length;
-    if (enemyCount == 0) this.scene.start('YouWon');
+    if (enemyCount == 0) {
+      game.input.mouse.releasePointerLock();
+      game.canvas.removeEventListener('mousedown', requestLock());
+      this.scene.start('YouWin');
+    }
 
     // give the bears some moves
     enemies.children.entries.forEach(enemy => {
       const moreLeft = player.x >= enemy.x;
       const moreUp = player.y >= enemy.y;
 
-      moreLeft ? enemy.setVelocityX(bearSpeed) : enemy.setVelocityX(-bearSpeed);
-      moreUp ? enemy.setVelocityY(bearSpeed) : enemy.setVelocityY(-bearSpeed);
+      moreLeft ? enemy.setVelocityX(bearSpeed * enemy.random) : enemy.setVelocityX(-bearSpeed * enemy.random);
+      moreUp ? enemy.setVelocityY(bearSpeed * enemy.random) : enemy.setVelocityY(-bearSpeed * enemy.random);
     });
 
     moving && !player.isHit ? player.anims.play('move', true) : player.anims.play('stand');

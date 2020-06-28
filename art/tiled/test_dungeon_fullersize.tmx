@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="36" height="36" tilewidth="8" tileheight="8" infinite="0" nextlayerid="9" nextobjectid="20">
+<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="36" height="36" tilewidth="8" tileheight="8" infinite="0" nextlayerid="9" nextobjectid="27">
  <editorsettings>
   <export target="../../src/src/assets/tilemaps/test_dungeon_fullersize.json" format="json"/>
  </editorsettings>
@@ -174,9 +174,30 @@
   <object id="12" x="115.092" y="236.665">
    <point/>
   </object>
+  <object id="20" x="93.8366" y="68.6925">
+   <point/>
+  </object>
+  <object id="21" x="178.601" y="51.325">
+   <point/>
+  </object>
+  <object id="22" x="200.375" y="75.6914">
+   <point/>
+  </object>
+  <object id="23" x="211.262" y="102.909">
+   <point/>
+  </object>
+  <object id="24" x="222.667" y="151.901">
+   <point/>
+  </object>
+  <object id="25" x="227.593" y="197.005">
+   <point/>
+  </object>
  </objectgroup>
  <objectgroup id="8" name="overlay">
   <object id="19" name="heart" x="188.71" y="264.401">
+   <point/>
+  </object>
+  <object id="26" name="score" x="43.8077" y="265.957">
    <point/>
   </object>
  </objectgroup>
