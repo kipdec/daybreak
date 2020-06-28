@@ -139,13 +139,13 @@ export default class TestDungeon extends Phaser.Scene {
 
     // attack colliders
     this.physics.add.collider(playerAttacks, projectileWalls, (attack) => playerAttacks.remove(attack, true, true));
-    this.physics.add.collider(playerAttacks, enemies, (attack, enemy) => {
+    this.physics.add.collider(playerAttacks, enemies, (attack, bearSprite) => {
       playerAttacks.remove(attack, true, true);
       // decrement health counter on enemy
-      enemy.health -= 1;
-      console.log(enemy.health);
-      if(enemy.health <= 0) {
-        enemies.remove(enemy, true, true);
+      bearSprite.health -= 1;
+      console.log(bearSprite.health);
+      if(bearSprite.health <= 0) {
+        enemies.remove(bearSprite, true, true);
       }
     })
 
