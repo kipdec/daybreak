@@ -184,10 +184,7 @@ export default class TestDungeon extends Phaser.Scene {
     console.log(player.health);
     console.log(enemies)
 
-    var shields = this.physics.add.group({
-      immovable: true,
-      visible: false,
-    })
+    let shieldUp = false
 
     // Fires event on click
     this.input.on('pointerdown', (pointer) => {
@@ -205,23 +202,25 @@ export default class TestDungeon extends Phaser.Scene {
         if (player.attackDay) {
           const nightShield = this.physics.add.sprite(player.x, player.y, 'nightShield')
           nightShield.inputEnabled = true
+          shieldUp = true
+          console.log('Shield up!')
 
           this.input.on('pointerup', () => {
             nightShield.destroy()
+            shieldUp = false
+            console.log('Shield down!')
           })
-
-          // collision stuff here
-
         } else {
           const dayShield = this.physics.add.sprite(player.x, player.y, 'dayShield')
           dayShield.inputEnabled = true
+          shieldUp = true
+          console.log('Shield up!')
           
           this.input.on('pointerup', () => {
             dayShield.destroy()
+            shieldUp = false
+            console.log('Shield down!')
           })
-
-          // collision stuff here
-
         }
         
       
@@ -248,36 +247,39 @@ export default class TestDungeon extends Phaser.Scene {
     });
 
     this.physics.add.collider(enemies, player, (player, bear) => {
-      var angle = Phaser.Math.Angle.Between(player.x, player.y, bear.x, bear.y);
-      player.isHit = true;
-      console.log(angle);
-      var angleX = 1;
-      var angleY = 1;
-      // knock player back on opposite angle
-      if(angle > 0){
-        angleY = -1;
-        if(angle < 1.5) angleX = -1;
+      if (shieldUp && !player.attackDay) {
+        console.log('Blocked!')
+      } else {
+        var angle = Phaser.Math.Angle.Between(player.x, player.y, bear.x, bear.y);
+        player.isHit = true;
+        console.log(angle);
+        var angleX = 1;
+        var angleY = 1;
+        // knock player back on opposite angle
+        if(angle > 0){
+          angleY = -1;
+          if(angle < 1.5) angleX = -1;
+        }
+  
+        if(angle <= 0 && angle > -1.5) {
+          angleX = -1;
+        }
+        
+        player.setVelocityX(800 * angleX);
+        player.setVelocityY(800 * angleY);
+        player.x = player.x + 10 * angleX;
+        player.y = player.y + 10 * angleY;
+  
+        player.health -= 1;
+        if(player.health <= 0) {
+          game.input.mouse.releasePointerLock();
+          this.scene.start('Title');
+        }
+  
+        const heartToBreak = hearts.children.entries[player.health];
+        console.log(heartToBreak);
+        heartToBreak.anims.play('empty', true);
       }
-
-      if(angle <= 0 && angle > -1.5) {
-        angleX = -1;
-      }
-      
-      player.setVelocityX(800 * angleX);
-      player.setVelocityY(800 * angleY);
-      player.x = player.x + 10 * angleX;
-      player.y = player.y + 10 * angleY;
-
-      player.health -= 1;
-      if(player.health <= 0) {
-        game.input.mouse.releasePointerLock();
-        this.scene.start('Title');
-      }
-
-      const heartToBreak = hearts.children.entries[player.health];
-      console.log(heartToBreak);
-      heartToBreak.anims.play('empty', true);
-
     })
 
     // Pointer lock will only work after mousedown
