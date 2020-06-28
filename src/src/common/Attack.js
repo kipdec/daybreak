@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 
 let Attack = new Phaser.Class({
-  Extends: Phaser.GameObjects.Image,
+  Extends: Phaser.Physics.Arcade.Image,
 
   initialize:
 
@@ -13,7 +13,7 @@ let Attack = new Phaser.Class({
     this.direction = 0
     this.xSpeed = 0;
     this.ySpeed = 0;
-    this.setSize(2, 2, true);
+    //this.setSize(2, 2, true);
   },
 
   // shoots off a spell from the attacker to the crosshair
@@ -32,6 +32,8 @@ let Attack = new Phaser.Class({
       this.xSpeed = -this.speed*Math.sin(this.direction);
       this.ySpeed = -this.speed*Math.cos(this.direction);
     }
+
+    this.setVelocity(this.xSpeed * 1000, this.ySpeed * 1000);
 
     this.rotation = attacker.rotation; // angle spell with attackers rotation
     this.born = 0; // Time since new spell spawned
