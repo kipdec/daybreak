@@ -13,9 +13,11 @@ import bearImg from '../assets/bear.png';
 import heartImg from '../assets/heart.png';
 
 var player;
+var enemies;
 var reticle;
 var cursors;
 var gameOver = false;
+const bearSpeed = 10;
 
 export default class TestDungeon extends Phaser.Scene {
   constructor() {
@@ -152,7 +154,7 @@ export default class TestDungeon extends Phaser.Scene {
 
     // add enemies
     var enemiesObjects = map.getObjectLayer('enemies')['objects'];
-    var enemies = this.physics.add.group({
+    enemies = this.physics.add.group({
       immovable: true,
       visible: true
     })
@@ -300,6 +302,19 @@ export default class TestDungeon extends Phaser.Scene {
       player.anims.play('hit', true);
       player.isHit = false;
     }
+
+    // see if the bears are dead
+    const enemyCount = enemies.children.entries.length;
+    if (enemyCount == 0) this.scene.start('YouWon');
+
+    // give the bears some moves
+    enemies.children.entries.forEach(enemy => {
+      const moreLeft = player.x >= enemy.x;
+      const moreUp = player.y >= enemy.y;
+
+      moreLeft ? enemy.setVelocityX(bearSpeed) : enemy.setVelocityX(-bearSpeed);
+      moreUp ? enemy.setVelocityY(bearSpeed) : enemy.setVelocityY(-bearSpeed);
+    });
 
     moving && !player.isHit ? player.anims.play('move', true) : player.anims.play('stand');
 
