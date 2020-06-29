@@ -11,8 +11,11 @@ import Attack from '../common/Attack.js';
 import enemyImg from '../assets/pc.png'
 import bearImg from '../assets/bear.png';
 import heartImg from '../assets/heart.png';
+import orangeShield from '../assets/orangeShield.png'
+import blueShield from '../assets/blueShield.png'
 
 var player;
+var shield;
 var reticle;
 var cursors;
 var gameOver = false;
@@ -40,6 +43,8 @@ export default class TestDungeon extends Phaser.Scene {
       frameWidth: 7,
       frameHeight: 6
     });
+    this.load.image('dayShield', orangeShield)
+    this.load.image('nightShield', blueShield)
   }
 
   create () {
@@ -62,7 +67,7 @@ export default class TestDungeon extends Phaser.Scene {
     player = this.physics.add.sprite(80, 80, "pc");
     player.health = 5;
     player.attackDay = true;
-
+    
     // draw health sprites
     // figure out locations
     const overlayObjects = map.getObjectLayer('overlay')['objects'];
@@ -179,19 +184,49 @@ export default class TestDungeon extends Phaser.Scene {
     console.log(player.health);
     console.log(enemies)
 
+    let shieldUp = false
 
+    // Fires event on click
+    this.input.on('pointerdown', (pointer) => {
+      // left click/attack
+      if (pointer.leftButtonDown()) {
+        // Get attack from attacks group
+        var attack = playerAttacks.get().setActive(true).setVisible(true);
+  
+        if (attack)
+        {
+          attack.shoot(player, reticle);
+        }
 
-    // Fires attack from player on left or right (trying to fix right) click of mouse
-    this.input.on('pointerdown', () => {
+      } else {
+        if (player.attackDay) {
+          const nightShield = this.physics.add.sprite(player.x, player.y, 'nightShield')
+          nightShield.inputEnabled = true
+          shieldUp = true
+          console.log('Shield up!')
 
-      // Get attack from attacks group
-      var attack = playerAttacks.get().setActive(true).setVisible(true);
-
-      if (attack)
-      {
-        attack.shoot(player, reticle);
+          this.input.on('pointerup', () => {
+            nightShield.destroy()
+            shieldUp = false
+            console.log('Shield down!')
+          })
+        } else {
+          const dayShield = this.physics.add.sprite(player.x, player.y, 'dayShield')
+          dayShield.inputEnabled = true
+          shieldUp = true
+          console.log('Shield up!')
+          
+          this.input.on('pointerup', () => {
+            dayShield.destroy()
+            shieldUp = false
+            console.log('Shield down!')
+          })
+        }
+        
+      
       }
     }, this);
+
 
     // attack colliders
     this.physics.add.collider(playerAttacks, projectileWalls, (attack) => playerAttacks.remove(attack, true, true));
@@ -212,36 +247,39 @@ export default class TestDungeon extends Phaser.Scene {
     });
 
     this.physics.add.collider(enemies, player, (player, bear) => {
-      var angle = Phaser.Math.Angle.Between(player.x, player.y, bear.x, bear.y);
-      player.isHit = true;
-      console.log(angle);
-      var angleX = 1;
-      var angleY = 1;
-      // knock player back on opposite angle
-      if(angle > 0){
-        angleY = -1;
-        if(angle < 1.5) angleX = -1;
+      if (shieldUp && !player.attackDay) {
+        console.log('Blocked!')
+      } else {
+        var angle = Phaser.Math.Angle.Between(player.x, player.y, bear.x, bear.y);
+        player.isHit = true;
+        console.log(angle);
+        var angleX = 1;
+        var angleY = 1;
+        // knock player back on opposite angle
+        if(angle > 0){
+          angleY = -1;
+          if(angle < 1.5) angleX = -1;
+        }
+  
+        if(angle <= 0 && angle > -1.5) {
+          angleX = -1;
+        }
+        
+        player.setVelocityX(800 * angleX);
+        player.setVelocityY(800 * angleY);
+        player.x = player.x + 10 * angleX;
+        player.y = player.y + 10 * angleY;
+  
+        player.health -= 1;
+        if(player.health <= 0) {
+          game.input.mouse.releasePointerLock();
+          this.scene.start('Title');
+        }
+  
+        const heartToBreak = hearts.children.entries[player.health];
+        console.log(heartToBreak);
+        heartToBreak.anims.play('empty', true);
       }
-
-      if(angle <= 0 && angle > -1.5) {
-        angleX = -1;
-      }
-      
-      player.setVelocityX(800 * angleX);
-      player.setVelocityY(800 * angleY);
-      player.x = player.x + 10 * angleX;
-      player.y = player.y + 10 * angleY;
-
-      player.health -= 1;
-      if(player.health <= 0) {
-        game.input.mouse.releasePointerLock();
-        this.scene.start('GameOver');
-      }
-
-      const heartToBreak = hearts.children.entries[player.health];
-      console.log(heartToBreak);
-      heartToBreak.anims.play('empty', true);
-
     })
 
     // Pointer lock will only work after mousedown
@@ -274,7 +312,6 @@ export default class TestDungeon extends Phaser.Scene {
       return;
     }
     
-    let moving = false;
     
     player.setVelocityX(0);
     player.setVelocityY(0);
@@ -300,6 +337,8 @@ export default class TestDungeon extends Phaser.Scene {
       player.anims.play('hit', true);
       player.isHit = false;
     }
+
+    let moving = false;
 
     moving && !player.isHit ? player.anims.play('move', true) : player.anims.play('stand');
 
