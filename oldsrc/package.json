@@ -5,7 +5,7 @@
   "main": "game.js",
   "dependencies": {},
   "devDependencies": {
-    "grunt": "^1.1.0",
+    "grunt": "^1.5.3",
     "grunt-contrib-connect": "^2.1.0"
   },
   "scripts": {
